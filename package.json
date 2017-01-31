@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "test": "npm run test"
+    "build:clear": "rm -rf ./dist && mkdir -p dist",
+    "build:dist": "cat ./src/*.js > ./dist/jquery-tools.js",
+    "build:minify": "uglifyjs ./src/* -c hoist_vars=true,if_return=true --output ./dist/jquery-tools.min.js",
+    "build": "npm run build:clear && npm run build:dist && npm run build:minify"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,7 @@
   "homepage": "https://github.com/daveruiz/jquery-master-toggler#readme",
   "devDependencies": {
     "bootstrap": "^3.3.7",
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "uglify-js": "^2.7.5"
   }
 }
