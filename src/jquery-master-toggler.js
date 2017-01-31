@@ -38,7 +38,6 @@
     checkValid('mode', validToggleModes, this.options.mode);
     checkValid('event', validToggleEvents, this.options.event);
 
-
     this.mode = this.options.mode || 'toggleClass';
     this.event = this.options.event || 'click';
     this.delay = parseInt(this.options.delay, 10) || 0;
@@ -97,35 +96,41 @@
   }
 
   Toggler.prototype.handleClass = function(customMode) {
-    setTimeout(function() {
-      switch(customMode || this.mode) {
-        case "toggleClass":
-          this.$target.toggleClass(this.class);
-          if (this.altClass) {
-            if (this.$target.hasClass(this.class)) {
+    this.$target.each(function() {
+      var $target = $(this);
+      var delay = $target.data('delay')
+        ? parseInt($target.data('delay'), 10)
+        : this.delay;
+
+      setTimeout(function() {
+        switch(customMode || this.mode) {
+          case "toggleClass":
+            this.$target.toggleClass(this.class);
+            if (this.altClass) {
+              if (this.$target.hasClass(this.class)) {
+                this.$target.removeClass(this.altClass);
+              } else {
+                this.$target.addClass(this.altClass);
+              }
+            }
+            break;
+
+          case "addClass":
+            this.$target.addClass(this.class);
+            if (this.altClass) {
               this.$target.removeClass(this.altClass);
-            } else {
+            }
+            break;
+
+          case "removeClass":
+            this.$target.removeClass(this.class);
+            if (this.altClass) {
               this.$target.addClass(this.altClass);
             }
-          }
-          break;
-
-        case "addClass":
-          this.$target.addClass(this.class);
-          if (this.altClass) {
-            this.$target.removeClass(this.altClass);
-          }
-          break;
-
-        case "removeClass":
-          this.$target.removeClass(this.class);
-          if (this.altClass) {
-            this.$target.addClass(this.altClass);
-          }
-          break;
-      }
-    }.bind(this), this.delay);
-
+            break;
+        }
+      }.bind(this), this.delay);
+    }.bind(this));
   }
 
   // jQuery integration
