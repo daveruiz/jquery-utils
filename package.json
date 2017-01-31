@@ -1,0 +1,23 @@
+{
+  "name": "jquery-master-toggler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://daveruiz@github.com/daveruiz/jquery-master-toggler.git"
+  },
+  "author": "David Ruiz Gutierrez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daveruiz/jquery-master-toggler/issues"
+  },
+  "homepage": "https://github.com/daveruiz/jquery-master-toggler#readme",
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1"
+  }
+}
