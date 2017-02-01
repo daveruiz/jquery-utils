@@ -4,6 +4,9 @@
   <title>jQuery master toggler</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+  <style>
+    .animated { transition: all .25s ease-in-out; }
+  </style>
 </head>
 <body>
   <!-- Fixed navbar -->
@@ -35,23 +38,25 @@
     </div>
 
     <div class="page-header">
-      <h1>Master Toggler</h1>
+      <h1>Toggler</h1>
     </div>
 
-    <h1>Button toggler</h1>
+    <h1>Button togglers</h1>
     <div class="row">
       <div class="col-xs-6">
         <button class="btn btn-primary" data-master-toggler data-mode="toggleClass" data-target="#container-1" data-class="in">Toggle 'in'</button>
         <button class="btn btn-primary" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="in">Show</button>
         <button class="btn btn-primary" data-master-toggler data-mode="removeClass" data-target="#container-1" data-class="in">Hide</button>
         <hr />
-        <button class="btn btn-danger" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="text-danger" data-alt-class="text-success text-warning text-info">Danger!</button>
-        <button class="btn btn-warning" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="text-warning" data-alt-class="text-success text-danger text-info">Warning</button>
-        <button class="btn btn-info" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="text-info" data-alt-class="text-success text-warning text-danger">Info</button>
-        <button class="btn btn-success" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="text-success" data-alt-class="text-danger text-warning text-info">Success</button>
+        <button class="btn btn-danger" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="alert-danger" data-alt-class="alert-success alert-warning alert-info">Danger!</button>
+        <button class="btn btn-warning" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="alert-warning" data-alt-class="alert-success alert-danger alert-info">Warning</button>
+        <button class="btn btn-info" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="alert-info" data-alt-class="alert-success alert-warning alert-danger">Info</button>
+        <button class="btn btn-success" data-master-toggler data-mode="addClass" data-target="#container-1" data-class="alert-success" data-alt-class="alert-danger alert-warning alert-info">Success</button>
+        <hr />
+        <button class="btn btn-primary" data-master-toggler data-target="#container-1" data-event="hover" target="" data-class="h4">Hover effect</button>
       </div>
       <div class="col-xs-6">
-        <div class="well well-lg fade in text-center" id="container-1" style="padding:3em 0">
+        <div class="alert alert-info fade in text-center animated" id="container-1" style="padding:3em 0">
           <p>target content</p>
         </div>
       </div>
