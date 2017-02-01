@@ -76,7 +76,9 @@
       this.visible = visible;
     }.bind(this);
 
-    $(window).scroll(this._scrollListener);
+    $(window)
+      .on('scroll resize', this._scrollListener)
+      .trigger('resize');
   }
 
   Toggler.prototype.unlistenScroll = function() {
