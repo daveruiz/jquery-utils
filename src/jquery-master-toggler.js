@@ -1,7 +1,7 @@
 (function($) {
 
   var validToggleModes = ['toggleClass', 'addClass', 'removeClass']
-  var validToggleEvents = ['click', 'mouseover', 'mouseout', 'mousedown', 'mouseup', 'visible'];
+  var validToggleEvents = ['click', 'hover', 'mouseover', 'mouseout', 'mousedown', 'mouseup', 'visible'];
 
   function checkValid(option, list, value, required) {
     if (!value) {
@@ -56,6 +56,18 @@
           if (show) this.handleClass('addClass');
           if (hide) this.handleClass('removeClass');
         }.bind(this));
+        break;
+
+      case 'hover':
+        this.$element
+          .on({
+            'mouseover.jqmt': function() {
+                this.handleClass('addClass');
+              }.bind(this),
+            'mouseout.jqmt': function() {
+                this.handleClass('removeClass');
+              }.bind(this)
+          });
         break;
 
       default:
