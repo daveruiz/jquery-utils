@@ -143,7 +143,7 @@
             }
             break;
         }
-      }.bind(this), this.delay);
+      }.bind(this), delay);
     }.bind(this));
   }
 
