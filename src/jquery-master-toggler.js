@@ -1,7 +1,8 @@
 (function($) {
 
   var validToggleModes = ['toggleClass', 'addClass', 'removeClass']
-  var validToggleEvents = ['click', 'hover', 'mouseover', 'mouseout', 'mousedown', 'mouseup', 'visible'];
+  var validToggleEvents = ['click', 'hover', 'mouseover', 'mouseout', 'mousedown',
+   'mouseup', 'visible', 'first-visible'];
 
   function checkValid(option, list, value, required) {
     if (!value) {
@@ -58,6 +59,15 @@
         }.bind(this));
         break;
 
+      case 'first-visible':
+        this.listenScroll(function(show, hide) {
+          if (show) {
+            this.handleClass();
+            this.unlistenScroll();
+          }
+        }.bind(this));
+        break;
+
       case 'hover':
         this.$element
           .on({
@@ -95,6 +105,7 @@
 
   Toggler.prototype.unlistenScroll = function() {
     if (this._scrollListener) {
+      $(window).off('scroll resize', this._scrollListener);
       this._scrollListener = null;
     }
   }
