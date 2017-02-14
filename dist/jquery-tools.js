@@ -221,36 +221,38 @@
   }
 
   Toggler.prototype.handleClass = function(customMode) {
-    this.$target.each(function() {
-      var $target = $(this);
+    this.$target.each(function(index, el) {
+      var $target = $(el);
       var delay = $target.data('delay')
         ? parseInt($target.data('delay'), 10)
         : this.delay;
 
+        console.log($target);
+
       setTimeout(function() {
         switch(customMode || this.mode) {
           case "toggleClass":
-            this.$target.toggleClass(this.class);
+            $target.toggleClass(this.class);
             if (this.altClass) {
-              if (this.$target.hasClass(this.class)) {
-                this.$target.removeClass(this.altClass);
+              if ($target.hasClass(this.class)) {
+                $target.removeClass(this.altClass);
               } else {
-                this.$target.addClass(this.altClass);
+                $target.addClass(this.altClass);
               }
             }
             break;
 
           case "addClass":
-            this.$target.addClass(this.class);
+            $target.addClass(this.class);
             if (this.altClass) {
-              this.$target.removeClass(this.altClass);
+              $target.removeClass(this.altClass);
             }
             break;
 
           case "removeClass":
-            this.$target.removeClass(this.class);
+            $target.removeClass(this.class);
             if (this.altClass) {
-              this.$target.addClass(this.altClass);
+              $target.addClass(this.altClass);
             }
             break;
         }
