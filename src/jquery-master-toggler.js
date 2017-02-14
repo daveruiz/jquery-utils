@@ -127,8 +127,6 @@
         ? parseInt($target.data('delay'), 10)
         : this.delay;
 
-        console.log($target);
-
       setTimeout(function() {
         switch(customMode || this.mode) {
           case "toggleClass":
