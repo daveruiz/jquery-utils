@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   <style>
     .animated { transition: all .25s ease-in-out; }
+    #fade-example .panel { padding: 3em; text-align: center; }
   </style>
 </head>
 <body>
@@ -62,6 +63,26 @@
         <div class="alert alert-info fade in text-center animated" id="container-1" style="padding:3em 0">
           <p>target content</p>
         </div>
+      </div>
+    </div>
+      
+    <h3>Alternate contents</h3>
+    <button class="btn btn-primary" data-master-toggler data-mode="addClass" data-parent="#fade-example" data-target="#fade-col-1" data-others=".col-xs-3" data-class="in">Show 1</button>
+    <button class="btn btn-primary" data-master-toggler data-mode="addClass" data-parent="#fade-example" data-target="#fade-col-2" data-others=".col-xs-3" data-class="in">Show 2</button>
+    <button class="btn btn-primary" data-master-toggler data-mode="addClass" data-parent="#fade-example" data-target="#fade-col-3" data-others=".col-xs-3" data-class="in">Show 3</button>
+    <button class="btn btn-primary" data-master-toggler data-mode="addClass" data-parent="#fade-example" data-target="#fade-col-4" data-others=".col-xs-3" data-class="in">Show 4</button>
+    <div class="row" id="fade-example">
+      <div class="col-xs-3 fade in" id="fade-col-1">
+        <div class="panel panel-default">Column 1</div>
+      </div>
+      <div class="col-xs-3 fade" id="fade-col-2">
+        <div class="panel panel-default">Column 2</div>
+      </div>
+      <div class="col-xs-3 fade" id="fade-col-3">
+        <div class="panel panel-default">Column 3</div>
+      </div>
+      <div class="col-xs-3 fade" id="fade-col-4">
+        <div class="panel panel-default">Column 4</div>
       </div>
     </div>
 

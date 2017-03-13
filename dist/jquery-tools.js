@@ -101,8 +101,15 @@
 (function($) {
 
   var validToggleModes = ['toggleClass', 'addClass', 'removeClass']
+
   var validToggleEvents = ['click', 'hover', 'mouseover', 'mouseout', 'mousedown',
    'mouseup', 'visible', 'first-visible'];
+
+  var reverseModes = {
+    toggleClass: 'toggleClass',
+    addClass: 'removeClass',
+    removeClass: 'addClass',
+  };
 
   function checkValid(option, list, value, required) {
     if (!value) {
@@ -139,12 +146,21 @@
     checkValid('mode', validToggleModes, this.options.mode);
     checkValid('event', validToggleEvents, this.options.event);
 
-    this.mode = this.options.mode || 'toggleClass';
-    this.event = this.options.event || 'click';
+    this.mode = this.options.mode;
+    this.event = this.options.event;
     this.delay = parseInt(this.options.delay, 10) || 0;
 
+    // Try first direct parent from current element
     this.$root = this.$element.closest(this.options.parent);
+
+    // Then try a global search
+    if (!this.$root.length) {
+      this.$root = $(this.options.parent);
+    }
+
     this.$target = this.$root.find(this.options.target || element);
+    this.$others = this.options.others
+      && this.$root.find(this.options.others).not(this.$target);
     this.class = this.options.class;
     this.altClass = this.options.altClass;
 
@@ -155,15 +171,22 @@
     switch(this.event) {
       case 'visible':
         this.listenScroll(function(show, hide) {
-          if (show) this.handleClass('addClass');
-          if (hide) this.handleClass('removeClass');
+          if (show) {
+            this.handleClass(this.$target, 'addClass');
+            if (this.$others) this.handleClass(this.$others, 'removeClass');
+          }
+          if (hide) {
+            this.handleClass(this.$target, 'removeClass');
+            if (this.$others) this.handleClass(this.$others, 'addClass');
+          }
         }.bind(this));
         break;
 
       case 'first-visible':
         this.listenScroll(function(show, hide) {
           if (show) {
-            this.handleClass();
+            this.handleClass(this.$target, this.mode);
+            if (this.$others) this.handleClass(this.$others, reverseModes[this.mode]);
             this.unlistenScroll();
           }
         }.bind(this));
@@ -173,16 +196,21 @@
         this.$element
           .on({
             'mouseover.jqmt': function() {
-                this.handleClass('addClass');
+                this.handleClass(this.$target, 'addClass');
+                if (this.$others) this.handleClass(this.$others, 'removeClass');
               }.bind(this),
             'mouseout.jqmt': function() {
-                this.handleClass('removeClass');
+                this.handleClass(this.$target, 'removeClass');
+                if (this.$others) this.handleClass(this.$others, 'addClass');
               }.bind(this)
           });
         break;
 
       default:
-        this._handleEvent = function(event) { this.handleClass(); }.bind(this);
+        this._handleEvent = function(event) {
+          this.handleClass(this.$target, this.mode);
+          if (this.$others) this.handleClass(this.$others, reverseModes[this.mode]);
+        }.bind(this);
         this.$element.on(this.event + '.jqmt', this._handleEvent);
         break;
     }
@@ -221,37 +249,41 @@
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
   }
 
-  Toggler.prototype.handleClass = function(customMode) {
-    this.$target.each(function(index, el) {
+  Toggler.prototype.handleClass = function($target, mode) {
+    var className = this.class;
+    var altClassName = this.altClass;
+    var delay = this.delay;
+
+    $target.each(function(index, el) {
       var $target = $(el);
       var delay = $target.data('delay')
         ? parseInt($target.data('delay'), 10)
         : this.delay;
 
       setTimeout(function() {
-        switch(customMode || this.mode) {
+        switch(mode) {
           case "toggleClass":
-            $target.toggleClass(this.class);
-            if (this.altClass) {
-              if ($target.hasClass(this.class)) {
-                $target.removeClass(this.altClass);
+            $target.toggleClass(className);
+            if (altClassName) {
+              if ($target.hasClass(className)) {
+                $target.removeClass(altClassName);
               } else {
-                $target.addClass(this.altClass);
+                $target.addClass(altClassName);
               }
             }
             break;
 
           case "addClass":
-            $target.addClass(this.class);
-            if (this.altClass) {
-              $target.removeClass(this.altClass);
+            $target.addClass(className);
+            if (altClassName) {
+              $target.removeClass(altClassName);
             }
             break;
 
           case "removeClass":
-            $target.removeClass(this.class);
-            if (this.altClass) {
-              $target.addClass(this.altClass);
+            $target.removeClass(className);
+            if (altClassName) {
+              $target.addClass(altClassName);
             }
             break;
         }
@@ -260,7 +292,9 @@
   }
 
   Toggler.defaults = {
-    parent: "body",
+    mode: 'toggleClass',
+    event: 'click',
+    parent: 'body',
   }
 
   // jQuery integration
