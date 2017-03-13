@@ -132,7 +132,7 @@
 
   function Toggler(element, options) {
     this.$element = $(element);
-    this.options = Object.assign({}, options || {});
+    this.options = Object.assign({}, Toggler.defaults, options || {});
     this.visible = false;
 
     checkRequired('class', this.options.class);
@@ -143,7 +143,8 @@
     this.event = this.options.event || 'click';
     this.delay = parseInt(this.options.delay, 10) || 0;
 
-    this.$target = $(this.options.target || element);
+    this.$root = this.$element.closest(this.options.parent);
+    this.$target = this.$root.find(this.options.target || element);
     this.class = this.options.class;
     this.altClass = this.options.altClass;
 
@@ -256,6 +257,10 @@
         }
       }.bind(this), delay);
     }.bind(this));
+  }
+
+  Toggler.defaults = {
+    parent: "body",
   }
 
   // jQuery integration
