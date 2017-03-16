@@ -38,6 +38,17 @@
     }
   }
 
+  function findNeighbors($element, selector) {
+    var $current = $element;
+    var $results;
+    do {
+      $current = $current.parent();
+      $results = $current.find(selector);
+    } while (!$current.is('body') && $current.length && $results.length === 0);
+
+    return $results;
+  }
+
   function Toggler(element, options) {
     this.$element = $(element);
     this.options = Object.assign({}, Toggler.defaults, options || {});
@@ -64,6 +75,7 @@
       && this.$root.find(this.options.others).not(this.$target);
     this.class = this.options.class;
     this.altClass = this.options.altClass;
+    this.activeClass = this.options.activeClass;
 
     this.init();
   }
@@ -109,6 +121,9 @@
         this.$element.on(this.event + '.jqmt', this._handleEvent);
         break;
     }
+
+    // Update active class
+    this.$element.on('jqmt-update', this.updateState.bind(this));
   }
 
   Toggler.prototype.listenScroll = function(fn) {
@@ -144,12 +159,25 @@
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
   }
 
+  Toggler.prototype.updateState = function() {
+    if (!this.activeClass) return;
+
+    if (this.$target.hasClass(this.class)) {
+      this.$element.addClass(this.activeClass);
+    } else {
+      this.$element.removeClass(this.activeClass);
+    }
+  }
+
   Toggler.prototype.handleClass = function(mode) {
+    var $button = this.$element;
+    var $otherButtons = findNeighbors(this.$element, '[data-others="' + this.options.others + '"]');
     var $target = this.$target;
     var $others = this.$others;
     var othersMode = otherModes[mode];
     var className = this.class;
     var altClassName = this.altClass;
+    var activeClassName = this.activeClassName;
     var delay = this.delay;
 
     $target.each(function(index, el) {
@@ -158,10 +186,10 @@
         ? parseInt($target.data('delay'), 10)
         : this.delay;
 
-      var doIt = function($target, mode) {
+      var doIt = function($target, currentMode) {
         if (!$target || !$target.length) return;
 
-        switch(mode) {
+        switch(currentMode) {
           case 'collapse':
           case 'toggleClass':
             $target.toggleClass(className);
@@ -193,6 +221,7 @@
       setTimeout(function() {
         doIt($target, mode);
         doIt($others, othersMode);
+        $otherButtons.trigger('jqmt-update');
       }.bind(this), delay);
     }.bind(this));
   }
@@ -201,6 +230,7 @@
     mode: 'toggleClass',
     event: 'click',
     parent: 'body',
+    activeClass: false,
   }
 
   // jQuery integration
