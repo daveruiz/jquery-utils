@@ -1,11 +1,12 @@
 (function($) {
 
-  var validToggleModes = ['toggleClass', 'addClass', 'removeClass']
+  var validToggleModes = ['toggleClass', 'addClass', 'removeClass', 'collapse']
 
   var validToggleEvents = ['click', 'hover', 'mouseover', 'mouseout', 'mousedown',
    'mouseup', 'visible', 'first-visible'];
 
-  var reverseModes = {
+  var otherModes = {
+    collapse: 'removeClass',
     toggleClass: 'toggleClass',
     addClass: 'removeClass',
     removeClass: 'addClass',
@@ -72,12 +73,10 @@
       case 'visible':
         this.listenScroll(function(show, hide) {
           if (show) {
-            this.handleClass(this.$target, 'addClass');
-            if (this.$others) this.handleClass(this.$others, 'removeClass');
+            this.handleClass('addClass');
           }
           if (hide) {
-            this.handleClass(this.$target, 'removeClass');
-            if (this.$others) this.handleClass(this.$others, 'addClass');
+            this.handleClass('removeClass');
           }
         }.bind(this));
         break;
@@ -85,8 +84,7 @@
       case 'first-visible':
         this.listenScroll(function(show, hide) {
           if (show) {
-            this.handleClass(this.$target, this.mode);
-            if (this.$others) this.handleClass(this.$others, reverseModes[this.mode]);
+            this.handleClass(this.mode);
             this.unlistenScroll();
           }
         }.bind(this));
@@ -96,20 +94,17 @@
         this.$element
           .on({
             'mouseover.jqmt': function() {
-                this.handleClass(this.$target, 'addClass');
-                if (this.$others) this.handleClass(this.$others, 'removeClass');
+                this.handleClass('addClass');
               }.bind(this),
             'mouseout.jqmt': function() {
-                this.handleClass(this.$target, 'removeClass');
-                if (this.$others) this.handleClass(this.$others, 'addClass');
+                this.handleClass('removeClass');
               }.bind(this)
           });
         break;
 
       default:
         this._handleEvent = function(event) {
-          this.handleClass(this.$target, this.mode);
-          if (this.$others) this.handleClass(this.$others, reverseModes[this.mode]);
+          this.handleClass(this.mode);
         }.bind(this);
         this.$element.on(this.event + '.jqmt', this._handleEvent);
         break;
@@ -149,7 +144,10 @@
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
   }
 
-  Toggler.prototype.handleClass = function($target, mode) {
+  Toggler.prototype.handleClass = function(mode) {
+    var $target = this.$target;
+    var $others = this.$others;
+    var othersMode = otherModes[mode];
     var className = this.class;
     var altClassName = this.altClass;
     var delay = this.delay;
@@ -160,9 +158,12 @@
         ? parseInt($target.data('delay'), 10)
         : this.delay;
 
-      setTimeout(function() {
+      var doIt = function($target, mode) {
+        if (!$target || !$target.length) return;
+
         switch(mode) {
-          case "toggleClass":
+          case 'collapse':
+          case 'toggleClass':
             $target.toggleClass(className);
             if (altClassName) {
               if ($target.hasClass(className)) {
@@ -173,20 +174,25 @@
             }
             break;
 
-          case "addClass":
+          case 'addClass':
             $target.addClass(className);
             if (altClassName) {
               $target.removeClass(altClassName);
             }
             break;
 
-          case "removeClass":
+          case 'removeClass':
             $target.removeClass(className);
             if (altClassName) {
               $target.addClass(altClassName);
             }
             break;
         }
+      }
+
+      setTimeout(function() {
+        doIt($target, mode);
+        doIt($others, othersMode);
       }.bind(this), delay);
     }.bind(this));
   }
