@@ -143,7 +143,7 @@
     var $results;
     do {
       $current = $current.parent();
-      $results = $current.find(selector);
+      $results = $current.find(selector).not($element);
     } while (!$current.is('body') && $current.length && $results.length === 0);
 
     return $results;
